@@ -18,5 +18,16 @@ router.get('/', (req, res) => {
     res.render('dinosaurs/index', {myDinos: dinoData})
 })
 
+router.get('/new', (req, res) => {
+    res.render('dinosaurs/new')
+})
+
+router.get('/edit/:idx', (req, res) => {
+    let dinosaurs = fs.readFileSync('./dinosaurs.json')
+    dinosaurs = JSON.parse(dinosaurs)
+    res.render('dinosaurs/edit', {dino: dinosaurs[req.params.idx], dinoId: req.params.idx})
+})
+
+
 
 module.exports = router

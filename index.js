@@ -18,16 +18,6 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
-app.get('/dinosaurs/new', (req, res) => {
-    res.render('dinosaurs/new')
-})
-
-app.get('/dinosaurs/edit/:idx', (req, res) => {
-    let dinosaurs = fs.readFileSync('./dinosaurs.json')
-    dinosaurs = JSON.parse(dinosaurs)
-    res.render('dinosaurs/edit', {dino: dinosaurs[req.params.idx], dinoId: req.params.idx})
-})
-
 app.get('/dinosaurs/:idx', (req, res) => {
     let dinosaurs = fs.readFileSync('./dinosaurs.json')
     let dinoData = JSON.parse(dinosaurs)
