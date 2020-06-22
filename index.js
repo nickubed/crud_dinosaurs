@@ -37,6 +37,12 @@ app.get('/dinosaurs/new', (req, res) => {
     res.render('dinosaurs/new')
 })
 
+app.get('/dinosaurs/edit/:idx', (req, res) => {
+    let dinosaurs = fs.readFileSync('./dinosaurs.json')
+    dinosaurs = JSON.parse(dinosaurs)
+    res.render('dinosaurs/edit', {dino: dinosaurs[req.params.idx], dinoId: req.params.idx})
+})
+
 app.get('/dinosaurs/:idx', (req, res) => {
     let dinosaurs = fs.readFileSync('./dinosaurs.json')
     let dinoData = JSON.parse(dinosaurs)
@@ -66,6 +72,18 @@ app.delete('/dinosaurs/:idx', (req, res) => {
     fs.writeFileSync('./dinosaurs.json', JSON.stringify(dinosaurs))
     // Once everything is done, we want to show the user the impact of their actions
     // by redirecting to the /dinosaurs route to see all remaining dinosaurs.
+    res.redirect('/dinosaurs')
+})
+
+app.put('/dinosaurs/:idx', (req, res) => {
+    let dinosaurs = fs.readFileSync('./dinosaurs.json')
+    dinosaurs = JSON.parse(dinosaurs)
+    // Select name & type of dinosaur selected by it's ID, then reassign name & type
+    dinosaurs[req.params.idx].name = req.body.name
+    dinosaurs[req.params.idx].type = req.body.type
+    // rewrite the file
+    fs.writeFileSync('./dinosaurs.json', JSON.stringify(dinosaurs))
+    // redirect to main page
     res.redirect('/dinosaurs')
 })
 
