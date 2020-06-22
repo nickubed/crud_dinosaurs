@@ -3,31 +3,40 @@ let router = express.Router()
 let fs = require('fs')
 
 router.get('/', (req, res) => {
+    // Hit the dinosaurs.json file and read it. Assign results to variable "dinosaurs"
     let dinosaurs = fs.readFileSync('./dinosaurs.json')
+    // Reassign the "dinosaurs" variable to dinoData after JSON.parsing so that we have access
+    // to the JSON data
     let dinoData = JSON.parse(dinosaurs)
+    // Taking our search parameters and assigning them to a nice variable name for readability
     let nameFilter = req.query.nameFilter
-
+    // If nameFilter is truthy, meaning, does it have any content at all? It does? Good!
+    // Enter filter!
     if(nameFilter){
         // Filtering over my dinoData array, only returning values that have matched what I
         // input in my "nameFilter"
         dinoData = dinoData.filter(dino => {
+            // Returns only what matches what we've searched for
             return dino.name.toLowerCase() === nameFilter.toLowerCase()
         })
     }
-
+    // Render the page, send the data along as an object called "myDinos"
     res.render('dinosaurs/index', {myDinos: dinoData})
 })
 
+// Get route to view new dinosaur form
 router.get('/new', (req, res) => {
     res.render('dinosaurs/new')
 })
 
+// Get route to view edit dinosaur form
 router.get('/edit/:idx', (req, res) => {
     let dinosaurs = fs.readFileSync('./dinosaurs.json')
     dinosaurs = JSON.parse(dinosaurs)
     res.render('dinosaurs/edit', {dino: dinosaurs[req.params.idx], dinoId: req.params.idx})
 })
 
+// Get route to view *ONE* dinosaur's information
 router.get('/:idx', (req, res) => {
     let dinosaurs = fs.readFileSync('./dinosaurs.json')
     let dinoData = JSON.parse(dinosaurs)
