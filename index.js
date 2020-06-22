@@ -12,25 +12,10 @@ app.use(layouts)
 app.use(express.urlencoded({extended: false}))
 // Method-Override will allow us to use PUT & DELETE routes!
 app.use(methodOverride('_method'))
+app.use('/dinosaurs', require('./controllers/dinosaurs'))
 
 app.get('/', (req, res) => {
     res.render('home')
-})
-
-app.get('/dinosaurs', (req, res) => {
-    let dinosaurs = fs.readFileSync('./dinosaurs.json')
-    let dinoData = JSON.parse(dinosaurs)
-    let nameFilter = req.query.nameFilter
-
-    if(nameFilter){
-        // Filtering over my dinoData array, only returning values that have matched what I
-        // input in my "nameFilter"
-        dinoData = dinoData.filter(dino => {
-            return dino.name.toLowerCase() === nameFilter.toLowerCase()
-        })
-    }
-
-    res.render('dinosaurs/index', {myDinos: dinoData})
 })
 
 app.get('/dinosaurs/new', (req, res) => {
