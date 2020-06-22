@@ -1,6 +1,7 @@
 let express = require('express')
-let layouts = require('express-ejs-layouts')
 let fs = require('fs')
+let layouts = require('express-ejs-layouts')
+let methodOverride = require('method-override')
 
 let app = express()
 
@@ -9,6 +10,8 @@ app.use(express.static(__dirname + '/public'))
 app.use(layouts)
 // Below is body-parser!
 app.use(express.urlencoded({extended: false}))
+// Method-Override will allow us to use PUT & DELETE routes!
+app.use(methodOverride('_method'))
 
 app.get('/', (req, res) => {
     res.render('home')
@@ -51,6 +54,18 @@ app.post('/dinosaurs', (req, res) => {
     // save the new array content to dinosaurs.json
     fs.writeFileSync('./dinosaurs.json', JSON.stringify(dinosaurs))
     // redirect to the /dinosaurs
+    res.redirect('/dinosaurs')
+})
+
+app.delete('/dinosaurs/:idx', (req, res) => {
+    let dinosaurs = fs.readFileSync('./dinosaurs.json')
+    dinosaurs = JSON.parse(dinosaurs)
+    // Remove the selected dinosaur from our "dinosaurs" array
+    dinosaurs.splice(req.params.idx, 1)
+    // Save over our dinosaurs.json with the newly formatted dinosaurs array.
+    fs.writeFileSync('./dinosaurs.json', JSON.stringify(dinosaurs))
+    // Once everything is done, we want to show the user the impact of their actions
+    // by redirecting to the /dinosaurs route to see all remaining dinosaurs.
     res.redirect('/dinosaurs')
 })
 
